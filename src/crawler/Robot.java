@@ -18,7 +18,7 @@ public class Robot {
 	public Robot(String base, String robotURL) throws MalformedURLException, IOException{
 		disallowSet = new HashSet<String>();
 		
-				
+		System.out.println(robotURL);		
 		InputStreamReader sr = new InputStreamReader(new URL(robotURL).openStream());		
 		BufferedReader bf = new BufferedReader(sr);
 		
@@ -28,7 +28,8 @@ public class Robot {
 			split = line.split(" ");
 			if(split != null && split.length>=2){
 				if(split[0].equals("Disallow:")){
-					disallowSet.add(base + split[1]);
+					disallowSet.add(base + split[1].substring(1));
+					System.out.println(base + split[1].substring(1));
 				}
 			}
 			

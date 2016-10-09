@@ -3,13 +3,15 @@ package crawler;
 import java.io.IOException;
 import java.net.MalformedURLException;
 
+import manager.Manager;
+
 public class HeuristicCrawler extends Crawler{
 
 	
 	
-	public HeuristicCrawler(String base, String robotURL)
+	public HeuristicCrawler(String base, String robotURL, Manager manager)
 			throws MalformedURLException, IOException {
-		super(base, robotURL);
+		super(base, robotURL, manager);
 	}
 
 	@Override

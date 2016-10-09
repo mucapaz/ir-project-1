@@ -17,67 +17,70 @@ import manager.Manager;
 public abstract class Crawler implements Runnable{
 
 	protected static final int CRAW_LIMIT = 100;
-	
+
 	protected String base;
-	
+
 	protected Robot robot;
 	protected Manager manager;
-	
+
 	protected Set<String> usedLinks;
-	
-	public Crawler(String base, String robotURL) throws MalformedURLException, IOException{
+
+	public Crawler(String base, String robotURL, Manager manager) throws MalformedURLException, IOException{
 		this.base = base;
 		robot = new Robot(base, robotURL);
 		usedLinks = new HashSet<String>();
+		this.manager = manager;
 	}
-	
+
 	@Override
 	public void run() {
 		craw();
-	
+
 	}
-	
+
 	public void craw() {
 		addLink(base);
 		usedLinks.add(base);
-		
+
 		Element atLinkElement;
 		Elements nextLinkElements;
-		
+
 		String link;
-		
+
 		int it = 0;	
 		while(linksNumber() > 0 && it < CRAW_LIMIT){
-			
+
 			try {
-								
+
 				atLinkElement = Jsoup.connect(removeNextLink()).get();
-				manager.addClassifierElement(atLinkElement);
-				
-				nextLinkElements = atLinkElement.select("a[href]");
-			
-				for(Element element : nextLinkElements){
-					link = element.attr("abs:href");
-					if(!usedLinks.contains(link) && !robot.disallow(link)){
-						usedLinks.add(link);
-						addLink(link);
-					}
+				if(atLinkElement != null){
+					manager.addClassifierElement(atLinkElement);
+
+					nextLinkElements = atLinkElement.select("a[href]");
+					if(nextLinkElements != null){
+						for(Element element : nextLinkElements){
+							link = element.attr("abs:href");
+							if(!usedLinks.contains(link) && !robot.disallow(link)){
+								usedLinks.add(link);
+								addLink(link);
+							}
+						}
+					}					
 				}
-				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
-			
+
 			it++;
 		}
-		
+
 	}
-	
+
 	public abstract void addLink(String link);
-	
+
 	public abstract int linksNumber();
-	
+
 	public abstract String removeNextLink();
-	
+
 }
