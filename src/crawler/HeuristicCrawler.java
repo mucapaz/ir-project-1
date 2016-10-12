@@ -20,9 +20,9 @@ public class HeuristicCrawler extends Crawler{
 	
 	private Set<String> words;
 	
-	public HeuristicCrawler(String base, String robotURL, Manager manager)
+	public HeuristicCrawler(ArrayList<String> urls, ArrayList<String> robotUrls, Manager manager)
 			throws MalformedURLException, IOException {
-		super(base, robotURL, manager);
+		super(urls, robotUrls, manager);
 		
 		rand = new Random();
 		

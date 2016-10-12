@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
@@ -16,7 +17,7 @@ import manager.Manager;
 
 public abstract class Crawler implements Runnable{
 
-	protected static final int CRAW_LIMIT = 100;
+	protected static final int CRAW_LIMIT = 10000;
 
 	protected String base;
 
@@ -25,11 +26,12 @@ public abstract class Crawler implements Runnable{
 
 	protected Set<String> usedLinks;
 
-	public Crawler(String base, String robotURL, Manager manager) throws MalformedURLException, IOException{
-		this.base = base;
-		robot = new Robot(base, robotURL);
-		usedLinks = new HashSet<String>();
+	public Crawler(ArrayList<String> urls, ArrayList<String> robotUrls, Manager manager) throws MalformedURLException, IOException{
 		this.manager = manager;
+		
+		robot = new Robot(urls, robotUrls);		
+		usedLinks = new HashSet<String>();
+		
 	}
 
 	@Override
@@ -39,26 +41,24 @@ public abstract class Crawler implements Runnable{
 	}
 
 	public void craw() {
-		addLink(base);
-		usedLinks.add(base);
-
-		Element atLinkElement;
-		Elements nextLinkElements;
+		
+		Document atLinkdocument;
+		Elements nextLinkDocuments;
 
 		String link;
 
 		int it = 0;	
 		while(linksNumber() > 0 && it < CRAW_LIMIT){
-
+			
 			try {
 
-				atLinkElement = Jsoup.connect(removeNextLink()).get();
-				if(atLinkElement != null){
-					manager.addClassifierElement(atLinkElement);
+				atLinkdocument = Jsoup.connect(removeNextLink()).get();
+				if(atLinkdocument != null){
+					manager.addClassifierElement(atLinkdocument);
 
-					nextLinkElements = atLinkElement.select("a[href]");
-					if(nextLinkElements != null){
-						for(Element element : nextLinkElements){
+					nextLinkDocuments = atLinkdocument.select("a[href]");
+					if(nextLinkDocuments != null){
+						for(Element element : nextLinkDocuments){
 							link = element.attr("abs:href");
 							if(!usedLinks.contains(link) && !robot.disallow(link)){
 								usedLinks.add(link);
@@ -67,8 +67,9 @@ public abstract class Crawler implements Runnable{
 						}
 					}					
 				}
-			} catch (IOException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
+				System.out.println("CRAWS TO GO " + (CRAW_LIMIT - it));
 				e.printStackTrace();
 			} 
 
@@ -82,5 +83,6 @@ public abstract class Crawler implements Runnable{
 	public abstract int linksNumber();
 
 	public abstract String removeNextLink();
+	
 
 }

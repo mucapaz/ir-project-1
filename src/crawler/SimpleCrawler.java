@@ -14,17 +14,21 @@ public class SimpleCrawler extends Crawler {
 
 	private ArrayList<String> nextLinks;
 	
-	public SimpleCrawler(String base, String robotURL, Manager manager) throws MalformedURLException, IOException{
-		super(base, robotURL, manager);
+	public SimpleCrawler(ArrayList<String> urls, ArrayList<String> robotUrls, Manager manager) throws MalformedURLException, IOException{
+		super(urls, robotUrls, manager);
 		nextLinks = new ArrayList<String>();
+		
+		for(String url : urls){
+			addLink(url);
+			usedLinks.add(url);
+		}
 	}
 	
 	@Override
 	public void addLink(String link) {
 		nextLinks.add(link);
-		
 	}
-
+	
 	@Override
 	public int linksNumber() {
 		return nextLinks.size();
