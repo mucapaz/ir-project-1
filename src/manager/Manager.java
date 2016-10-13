@@ -13,7 +13,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
 import classifier.ClassifierWrapper;
-
+import crawler.HeuristicCrawler;
 import crawler.SimpleCrawler;
 
 public class Manager {
@@ -36,7 +36,6 @@ public class Manager {
 		String line;
 		
 		while((line = bf.readLine()) != null){
-//			System.out.println(line);
 			url.add(line.split(" ")[0]);
 			robot.add(line.split(" ")[1]);
 		}
@@ -44,7 +43,7 @@ public class Manager {
 		
 		
 		try {
-			Thread crawlerThread = new Thread(new SimpleCrawler(url, 
+			Thread crawlerThread = new Thread(new HeuristicCrawler(url, 
 					robot, this));
 			
 			crawlerThread.start();
@@ -70,7 +69,6 @@ public class Manager {
 	}
 	
 	public void addClassifierElement(Document document){
-//		System.out.println("added classifier element" + element.baseUri());
 		classifierDocument.add(document);
 	}
 	
@@ -84,7 +82,6 @@ public class Manager {
 			}
 		}
 		
-		//System.out.println("removed classfier element");
 		return classifierDocument.remove(0);
 	}
 	
