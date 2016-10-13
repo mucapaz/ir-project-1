@@ -18,6 +18,8 @@ import org.jsoup.nodes.Element;
 import manager.Manager;
 
 import weka.classifiers.Classifier;
+import weka.core.Attribute;
+import weka.core.FastVector;
 import weka.core.Instances;
 import weka.core.SparseInstance;
 import weka.core.converters.ArffLoader.ArffReader;
@@ -33,38 +35,60 @@ public class ClassifierWrapper implements Runnable{
 	public static void main(String[] args) throws Exception{
 		ClassifierWrapper cw = new ClassifierWrapper("classifier.model", 
 				"attributes", null);
-		
-		Document doc1 = Jsoup.connect("http://carro.mercadolivre.com.br/MLB-802823205-ds" +
-				"5-16-16v-turbo-2014-prata-top-de-linha-unico-dono-_JM").get();
+
+		Document doc1 = Jsoup.connect("http://carro.mercadolivre.com.br/MLB-802823205-ds5-16-16v-turbo-2014-prata-top-de-linha-unico-dono-_JM").get();
 		System.out.println(cw.classify(doc1.text()));
-		
-		Document doc2 = Jsoup.connect("http://carros.mercadolivre.com.br/" +
-				"carros-e-caminhonetes/carros#D[RC:MLB1744,P:2,Q:5]").get();
+
+		Document doc2 = Jsoup.connect("http://carros.mercadolivre.com.br/carros-e-caminhonetes/carros#D[RC:MLB1744,P:2,Q:5]").get();
 		System.out.println(cw.classify(doc2.text()));
-		
+
 		Document doc3 = Jsoup.connect("https://www.google.com.br/?gfe_rd=cr&ei=oKL-V_3TEpKF8QfInKxI&gws_rd=ssl").get();
 		System.out.println(cw.classify(doc3.text()));
-		
+
 		Document doc4 = Jsoup.connect("http://www.olx.com.br/veiculos/carros").get();
 		System.out.println(cw.classify(doc4.text()));
-		
+
 		System.out.println(" ---------------------- ");
-		
+
 		Document doc5 = Jsoup.connect("http://diariodepernambuco.vrum.com.br/seguros/").get();
 		System.out.println(cw.classify(doc5.text()));
-		
-		
+
+
 		Document doc6 = Jsoup.connect("http://www.bolsadeautomoveisrj.com.br/Veiculo/captiva-2.4-sfi-ecotec-fwd-16v-gasolina-4p-automatico-gasolina-2011/62328/detalhes").get();
 		System.out.println(cw.classify(doc6.text()));
-//		
-//		Document doc7 = Jsoup.connect("https://www.google.com.br/?gfe_rd=cr&ei=oKL-V_3TEpKF8QfInKxI&gws_rd=ssl").get();
-//		System.out.println(cw.classify(doc3.text()));
-//		
-//		Document doc8 = Jsoup.connect("http://www.olx.com.br/veiculos/carros").get();
-//		System.out.println(cw.classify(doc3.text()));
-		
+		//		
+		//		Document doc7 = Jsoup.connect("https://www.google.com.br/?gfe_rd=cr&ei=oKL-V_3TEpKF8QfInKxI&gws_rd=ssl").get();
+		//		System.out.println(cw.classify(doc3.text()));
+		//		
+		//		Document doc8 = Jsoup.connect("http://www.olx.com.br/veiculos/carros").get();
+		//		System.out.println(cw.classify(doc3.text()));
+
 	}
-	
+
+
+	//	public static void main(String[] args){
+	//		//local do modelo de classificacao criado
+	//		String localModelo = args[0];
+	//		//features do classificador
+	//		String[] attributes = args[1].split(" ");
+	//		InputStream is = new FileInputStream(localModelo);
+	//		ObjectInputStream objectInputStream = new ObjectInputStream(is);
+	//		Classifier classifier = (Classifier) objectInputStream.readObject();
+	//		weka.core.FastVector vectorAtt = new weka.core.FastVector();
+	//		for (int i = 0; i < attributes.length; i++) {
+	//			vectorAtt.addElement(new weka.core.Attribute(attributes[i]));
+	//		}
+	//		String[] classValues = config.getParam("CLASS_VALUES", " ");
+	//		weka.core.FastVector classAtt = new weka.core.FastVector();
+	//		for (int i = 0; i < classValues.length; i++) {
+	//			classAtt.addElement(classValues[i]);
+	//		}
+	//		vectorAtt.addElement(new weka.core.Attribute("class", classAtt));
+	//		Instances insts = new Instances("classification", vectorAtt, 1);
+	//		insts.setClassIndex(attributes.length);
+	//		Classificador classificador = new Classificador(classifier, insts, attributes);
+	//	}
+
 	public ClassifierWrapper(String classifierModelLocation, String attributesLocation, Manager manager)
 			throws FileNotFoundException, IOException, ClassNotFoundException{
 
@@ -74,32 +98,49 @@ public class ClassifierWrapper implements Runnable{
 		this.classifier = (Classifier) obs.readObject();
 		obs.close();
 
-//		FastVector classVec = new FastVector<>();
-//		classVec.addElement("pos");
-//		classVec.addElement("neg");
-//
-//		FastVector attVec = new FastVector();
-//		attVec.add(classVec);
+		FastVector attVec = new FastVector();
+		FastVector classVec = new FastVector<>();
+		
+		classVec.addElement("pos");
+		classVec.addElement("neg");
+
+		
 
 		attributes = new ArrayList<String>();
 
 		String line;	
 		BufferedReader br = new BufferedReader(new FileReader(attributesLocation));
 		while((line = br.readLine()) != null){
-//			attVec.addElement(new Attribute(line));
+			//			attVec.addElement(new Attribute(line));
 			attributes.add(line);
+			attVec.add(new Attribute(line));
 		}
-
-		String lol = "final.arff";
-		BufferedReader reader =
-				new BufferedReader(new FileReader(lol));
-		ArffReader arff = new ArffReader(reader);
-		Instances data = arff.getData();
+		
+		attVec.add(new Attribute("classes", classVec));
+		
+		
+//		String lol = "final.arff";
+//		BufferedReader reader =
+//				new BufferedReader(new FileReader(lol));
+//		ArffReader arff = new ArffReader(reader);
+		
+		
+//		Instances data = arff.getData();
+		
+//		String[] arAttr = new String[attributes.size()];
+//		
+//		for(int x=0;x<attributes.size();x++){
+//			arAttr[x] = attributes.get(x);
+//		}
+		
+		
+		Instances data = new Instances("classification", attVec, 1);
 		data.setClassIndex(data.numAttributes() - 1);
 		this.instances = data;
+		
 		//this.instances = new Instances("classification", attVec, 1);
-		
-		
+
+
 		instances.setClassIndex(attributes.size());
 
 	}
@@ -109,15 +150,15 @@ public class ClassifierWrapper implements Runnable{
 	public boolean classify(String page) throws Exception{
 		boolean relevant = false;
 		double[] values = getValues(page);
-//		for(int x=0;x<values.length;x++){
-//			System.out.print(values[x] + " :");
-//		}
-//		System.out.println();
+		//		for(int x=0;x<values.length;x++){
+		//			System.out.print(values[x] + " :");
+		//		}
+		//		System.out.println();
 		SparseInstance instanceWeka = new SparseInstance(1, values);
 		instanceWeka.setDataset(instances);
 		double classificationResult = classifier.classifyInstance(instanceWeka);
-//		System.out.println(classificationResult);
-		if (classificationResult != 0) {
+		//		System.out.println(classificationResult);
+		if (classificationResult == 0) {
 			relevant = true;
 		}
 		else {
@@ -176,9 +217,9 @@ public class ClassifierWrapper implements Runnable{
 				boolean include = classify(page);
 				if(include){
 					manager.addExtractorElement(document);
-					
+
 				}
-				
+
 				System.out.println(include + "  " + document.baseUri());
 			} catch (Exception e) {
 				e.printStackTrace();
