@@ -84,7 +84,7 @@ public class Manager {
 			}
 		}
 		
-		System.out.println("removed classfier element");
+		//System.out.println("removed classfier element");
 		return classifierDocument.remove(0);
 	}
 	

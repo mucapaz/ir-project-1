@@ -54,8 +54,7 @@ public class ClassifierWrapper implements Runnable{
 		System.out.println(cw.classify(doc5.text()));
 		
 		
-		Document doc6 = Jsoup.connect("http://www.bolsadeautomoveisrj.com.br/Veiculo/captiva-" +
-				"2.4-sfi-ecotec-fwd-16v-gasolina-4p-automatico-gasolina-2011/62328/detalhes").get();
+		Document doc6 = Jsoup.connect("http://www.bolsadeautomoveisrj.com.br/Veiculo/captiva-2.4-sfi-ecotec-fwd-16v-gasolina-4p-automatico-gasolina-2011/62328/detalhes").get();
 		System.out.println(cw.classify(doc6.text()));
 //		
 //		Document doc7 = Jsoup.connect("https://www.google.com.br/?gfe_rd=cr&ei=oKL-V_3TEpKF8QfInKxI&gws_rd=ssl").get();
@@ -91,11 +90,12 @@ public class ClassifierWrapper implements Runnable{
 			attributes.add(line);
 		}
 
+		String lol = "final.arff";
 		BufferedReader reader =
-				new BufferedReader(new FileReader("data.arff"));
+				new BufferedReader(new FileReader(lol));
 		ArffReader arff = new ArffReader(reader);
 		Instances data = arff.getData();
-		data.setClassIndex(0);
+		data.setClassIndex(data.numAttributes() - 1);
 		this.instances = data;
 		//this.instances = new Instances("classification", attVec, 1);
 		
@@ -109,15 +109,15 @@ public class ClassifierWrapper implements Runnable{
 	public boolean classify(String page) throws Exception{
 		boolean relevant = false;
 		double[] values = getValues(page);
-		for(int x=0;x<values.length;x++){
-			System.out.print(values[x] + " :");
-		}
-		System.out.println();
+//		for(int x=0;x<values.length;x++){
+//			System.out.print(values[x] + " :");
+//		}
+//		System.out.println();
 		SparseInstance instanceWeka = new SparseInstance(1, values);
 		instanceWeka.setDataset(instances);
 		double classificationResult = classifier.classifyInstance(instanceWeka);
-		System.out.println(classificationResult);
-		if (classificationResult == 0) {
+//		System.out.println(classificationResult);
+		if (classificationResult != 0) {
 			relevant = true;
 		}
 		else {
@@ -176,6 +176,7 @@ public class ClassifierWrapper implements Runnable{
 				boolean include = classify(page);
 				if(include){
 					manager.addExtractorElement(document);
+					
 				}
 				
 				System.out.println(include + "  " + document.baseUri());
