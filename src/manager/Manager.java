@@ -59,8 +59,11 @@ public class Manager {
 			
 			
 			crawlerThread.join();
+			System.out.println("Crawler terminated");
 			classifierThread.join();
+			System.out.println("Classifier terminated");
 			extractorThread.join();
+			System.out.println("Extractor terminated");
 			
 		} catch (IOException e) {
 			e.printStackTrace();
