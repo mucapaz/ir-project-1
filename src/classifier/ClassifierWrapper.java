@@ -56,38 +56,11 @@ public class ClassifierWrapper implements Runnable{
 
 		Document doc6 = Jsoup.connect("http://www.bolsadeautomoveisrj.com.br/Veiculo/captiva-2.4-sfi-ecotec-fwd-16v-gasolina-4p-automatico-gasolina-2011/62328/detalhes").get();
 		System.out.println(cw.classify(doc6.text()));
-		//		
-		//		Document doc7 = Jsoup.connect("https://www.google.com.br/?gfe_rd=cr&ei=oKL-V_3TEpKF8QfInKxI&gws_rd=ssl").get();
-		//		System.out.println(cw.classify(doc3.text()));
-		//		
-		//		Document doc8 = Jsoup.connect("http://www.olx.com.br/veiculos/carros").get();
-		//		System.out.println(cw.classify(doc3.text()));
+	
 
 	}
 
 
-	//	public static void main(String[] args){
-	//		//local do modelo de classificacao criado
-	//		String localModelo = args[0];
-	//		//features do classificador
-	//		String[] attributes = args[1].split(" ");
-	//		InputStream is = new FileInputStream(localModelo);
-	//		ObjectInputStream objectInputStream = new ObjectInputStream(is);
-	//		Classifier classifier = (Classifier) objectInputStream.readObject();
-	//		weka.core.FastVector vectorAtt = new weka.core.FastVector();
-	//		for (int i = 0; i < attributes.length; i++) {
-	//			vectorAtt.addElement(new weka.core.Attribute(attributes[i]));
-	//		}
-	//		String[] classValues = config.getParam("CLASS_VALUES", " ");
-	//		weka.core.FastVector classAtt = new weka.core.FastVector();
-	//		for (int i = 0; i < classValues.length; i++) {
-	//			classAtt.addElement(classValues[i]);
-	//		}
-	//		vectorAtt.addElement(new weka.core.Attribute("class", classAtt));
-	//		Instances insts = new Instances("classification", vectorAtt, 1);
-	//		insts.setClassIndex(attributes.length);
-	//		Classificador classificador = new Classificador(classifier, insts, attributes);
-	//	}
 
 	public ClassifierWrapper(String classifierModelLocation, String attributesLocation, Manager manager)
 			throws FileNotFoundException, IOException, ClassNotFoundException{
@@ -216,11 +189,10 @@ public class ClassifierWrapper implements Runnable{
 			try {
 				boolean include = classify(page);
 				if(include){
-					manager.addExtractorElement(document);
-
+					manager.addExtractorDocument(document);
 				}
 
-				System.out.println(include + "  " + document.baseUri());
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
