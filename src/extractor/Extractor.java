@@ -120,13 +120,15 @@ public class Extractor implements Runnable{
 	}
 
 	public void extractFromGenericDocument(Document doc, String site){
-		System.out.println("\n===== " + site);
-
+		
+		String tittle = "", price = "";
+		ArrayList<String> ar = new ArrayList<String>();
+		
 		boolean foundTittle = false;
 		Elements tittleElements = doc.body().getElementsByTag("h1");
 		for (Element e : tittleElements) {
 			if (checkTittle(e.text())) {
-				System.out.println(e.text());
+				tittle = e.text();
 				foundTittle = true;
 				break;
 			}
@@ -135,7 +137,7 @@ public class Extractor implements Runnable{
 			tittleElements = doc.body().getElementsByTag("h2");
 			for (Element e : tittleElements) {
 				if (checkTittle(e.text())) {
-					System.out.println(e.text());
+					tittle = e.text();
 					break;
 				}
 			}
@@ -146,7 +148,7 @@ public class Extractor implements Runnable{
 			if (e.className().contains("valor")
 					|| e.className().contains("preco")
 					|| e.className().contains("price")) {
-				System.out.println(e.text());
+				price = e.text();
 				break;
 			}
 		}
@@ -155,22 +157,26 @@ public class Extractor implements Runnable{
 		for (Element e : listElements) {
 			if (e.text().contains("Ano") || e.text().contains("ANO")
 					|| e.text().contains("KM")) {
-				System.out.println(e.text());
+				ar.add(e.text());
 				break;
 			}
 
 		}	
-
+		
+		if(tittle.length() > 0  && price.length() > 0){
+			printResult(site, tittle, price, ar);
+		}
+		
 	}
 
 	public void extractFromDocument(Document doc, String site, String tittleTag,
 			String priceTag, String attrsTag, String attrsElementTag) {
 
-		String title, price;
+		String tittle, price;
 		ArrayList<String> ar = new ArrayList<String>();
 
 		try {
-			title = doc.select(tittleTag).first().text();		
+			tittle = doc.select(tittleTag).first().text();		
 			price = doc.select(priceTag).first().text();
 
 			Element conteudo = doc.select(attrsTag).first();
@@ -178,15 +184,11 @@ public class Extractor implements Runnable{
 			for (Element e : attr) {
 				ar.add(e.text());
 			}
-
-			System.out.println("\n\n=== " + site);
-			System.out.println(title);
-			System.out.println(price);
-
-			for(String str : ar){
-				System.out.println(str);
+			
+			if(tittle.length() > 0  && price.length() > 0){
+				printResult(site, tittle, price, ar);
 			}
-
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -194,6 +196,16 @@ public class Extractor implements Runnable{
 
 	}
 
+	public void printResult(String site, String tittle, String price, ArrayList<String> ar){
+		System.out.println("\n\n Site: " + site);
+		System.out.println(tittle);
+		System.out.println(price);
+
+		for(String str : ar){
+			System.out.println(str);
+		}
+	}
+	
 	private boolean checkTittle(String tit) {
 		String marcasCarro[] = { "Fiat", "Jeep", "Suzuki", "Volkswagen",
 				"Nissan", "Ford", "Citroën", "Honda", "Bmw", "Audi", "Citroen",
