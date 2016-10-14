@@ -46,7 +46,6 @@ public abstract class Crawler implements Runnable{
 		Elements nextLinkDocuments;
 
 		String link;
-
 		int it = 0;	
 		while(linksNumber() > 0 && it < CRAW_LIMIT){
 			

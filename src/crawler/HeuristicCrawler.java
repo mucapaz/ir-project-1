@@ -37,11 +37,17 @@ public class HeuristicCrawler extends Crawler{
 			words.add(in.nextLine());
 		}
 		
+		for(String url : urls){
+			addLink(url);
+			usedLinks.add(url);
+		}
+		
 		
 	}
 
 	@Override
 	public void addLink(String link) {
+		
 		boolean ok = false;
 		
 		String[] split = link.split("/");
