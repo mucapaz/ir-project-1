@@ -42,7 +42,6 @@ public class Extractor implements Runnable{
 
 	public void processDocument(Document document) {
 
-		String site = "";
 		String tittleTag = "";
 		String priceTag = "";
 		String attrsTag = "";
@@ -51,61 +50,51 @@ public class Extractor implements Runnable{
 
 		String line = document.html();
 		if (line.contains(sites[0])) {
-			site = "iCarros";
 			tittleTag = "h1.titulo-sm";
 			priceTag = "h2.preco";
 			attrsTag = "div.card-informacoes-basicas";
 			attrsElementTag = "li";
 		} else if (line.contains(sites[1])) {
-			site = "MercadoLivre";
 			tittleTag = "h1[itemprop='name']";
 			priceTag = "dd.placePrice";
 			attrsTag = "ul.technical-details";
 			attrsElementTag = "li";
 		} else if (line.contains(sites[2])) {
-			site = "olx";
 			tittleTag = "h1#ad_title";
 			priceTag = "span.OLXad-price";
 			attrsTag = "div.atributes";
 			attrsElementTag = "li";
 		} else if (line.contains(sites[3])) {
-			site = "jbsveiculos";
 			tittleTag = "h1.car-details__title";
 			priceTag = "h2.car-details__price";
 			attrsTag = "ul.car-details__features";
 			attrsElementTag = "li";
 		} else if (line.contains(sites[4])) {
-			site = "diariodepernambucovrum";
 			tittleTag = "h1.resultados-da-busca-descricao-dos-itens";
 			priceTag = "li.item-valor";
 			attrsTag = "ul.dados-item";
 			attrsElementTag = "li";
 		} else if (line.contains(sites[5])) {
-			site = "autoline";
 			tittleTag = "div.rotate-banner-heding";
 			priceTag = "div#divProposta header";
 			attrsTag = "div.car-detail ul";
 			attrsElementTag = "li";
 		} else if (line.contains(sites[6])) {
-			site = "socarrao";
 			tittleTag = "div.titulo-principal-detalhe";
 			priceTag = "div.modal-lateral-box-preco";
 			attrsTag = "div.aba-dados-veiculo-dados";
 			attrsElementTag = "li";
 		} else if (line.contains(sites[7])) {
-			site = "sodresantoro";
 			tittleTag = "div.online_lance-tit-esq";
 			priceTag = "span.valor";
 			attrsTag = "ul.divisao";
 			attrsElementTag = "li";
 		} else if (line.contains(sites[8])) {
-			site = "bolsadeautomoveisrj";
 			tittleTag = "h2.post-title";
 			priceTag = "span.price";
 			attrsTag = "div.dados_anuncio ul";
 			attrsElementTag = "li";
 		} else if (line.contains(sites[9])) {
-			site = "estadodeminas";
 			tittleTag = "h1.resultados-da-busca-descricao-dos-itens";
 			priceTag = "li.item-valor";
 			attrsTag = "ul.dados-item";
@@ -113,13 +102,13 @@ public class Extractor implements Runnable{
 		}
 
 
-		if(useGeneric) extractFromGenericDocument(document, site);
-		else extractFromDocument(document,site, tittleTag,
+		if(useGeneric) extractFromGenericDocument(document);
+		else extractFromDocument(document,tittleTag,
 				priceTag, attrsTag, attrsElementTag);
 
 	}
 
-	public void extractFromGenericDocument(Document doc, String site){
+	public void extractFromGenericDocument(Document doc){
 		
 		String tittle = "", price = "";
 		ArrayList<String> ar = new ArrayList<String>();
@@ -164,12 +153,12 @@ public class Extractor implements Runnable{
 		}	
 		
 		if(tittle.length() > 0  && price.length() > 0){
-			printResult(site, tittle, price, ar);
+			printResult(doc, tittle, price, ar);
 		}
 		
 	}
 
-	public void extractFromDocument(Document doc, String site, String tittleTag,
+	public void extractFromDocument(Document doc, String tittleTag,
 			String priceTag, String attrsTag, String attrsElementTag) {
 
 		String tittle, price;
@@ -186,7 +175,7 @@ public class Extractor implements Runnable{
 			}
 			
 			if(tittle.length() > 0  && price.length() > 0){
-				printResult(site, tittle, price, ar);
+				printResult(doc, tittle, price, ar);
 			}
 			
 		} catch (Exception e) {
@@ -196,8 +185,8 @@ public class Extractor implements Runnable{
 
 	}
 
-	public void printResult(String site, String tittle, String price, ArrayList<String> ar){
-		System.out.println("\n\n Site: " + site);
+	public void printResult(Document doc,String tittle, String price, ArrayList<String> ar){
+		System.out.println("\n\n Site: " + doc.baseUri());
 		System.out.println(tittle);
 		System.out.println(price);
 
