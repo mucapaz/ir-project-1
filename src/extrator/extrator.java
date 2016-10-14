@@ -21,7 +21,12 @@ public class extrator {
 			"www.socarrao.com.br", "www.sodresantoro.com.br",
 			"bolsadeautomoveisrj.com.br", "estadodeminas.vrum.com.br" };
 
-	
+	/*
+	public static void main(String[] args) {
+		extrator e = new extrator(false);
+		e.varreArquivos();
+	}
+	 */
 	public extrator(boolean generico) {
 		this.generico = generico; // true = generico / false = nao generico
 	}
@@ -38,86 +43,83 @@ public class extrator {
 
 				Scanner scanner = new Scanner(input);
 
-				// não GENÉRICO, um extrator pra cada html
-				if (!generico || true) {
-
-					// varre o html identificando de que site se trata
-					while (scanner.hasNextLine()) {
-						String line = scanner.nextLine();
-						if (line.contains(sites[0])) {
-							site = "iCarros";
-							tagTitulo = "h1.titulo-sm";
-							tagPreco = "h2.preco";
-							tagAttrs = "div.card-informacoes-basicas";
-							tagAttrsElemento = "li";
-							break;
-						} else if (line.contains(sites[1])) {
-							site = "MercadoLivre";
-							tagTitulo = "h1[itemprop='name']";
-							tagPreco = "dd.placePrice";
-							tagAttrs = "ul.technical-details";
-							tagAttrsElemento = "li";
-							break;
-						} else if (line.contains(sites[2])) {
-							site = "olx";
-							tagTitulo = "h1#ad_title";
-							tagPreco = "span.OLXad-price";
-							tagAttrs = "div.atributes";
-							tagAttrsElemento = "li";
-							break;
-						} else if (line.contains(sites[3])) {
-							site = "jbsveiculos";
-							tagTitulo = "h1.car-details__title";
-							tagPreco = "h2.car-details__price";
-							tagAttrs = "ul.car-details__features";
-							tagAttrsElemento = "li";
-							break;
-						} else if (line.contains(sites[4])) {
-							site = "diariodepernambucovrum";
-							tagTitulo = "h1.resultados-da-busca-descricao-dos-itens";
-							tagPreco = "li.item-valor";
-							tagAttrs = "ul.dados-item";
-							tagAttrsElemento = "li";
-							break;
-						} else if (line.contains(sites[5])) {
-							site = "autoline";
-							tagTitulo = "div.rotate-banner-heding";
-							tagPreco = "div#divProposta header";
-							tagAttrs = "div.car-detail ul";
-							tagAttrsElemento = "li";
-							break;
-						} else if (line.contains(sites[6])) {
-							site = "socarrao";
-							tagTitulo = "div.titulo-principal-detalhe";
-							tagPreco = "div.modal-lateral-box-preco";
-							tagAttrs = "div.aba-dados-veiculo-dados";
-							tagAttrsElemento = "li";
-							break;
-						} else if (line.contains(sites[7])) {
-							site = "sodresantoro";
-							tagTitulo = "div.online_lance-tit-esq";
-							tagPreco = "span.valor";
-							tagAttrs = "ul.divisao";
-							tagAttrsElemento = "li";
-							break;
-						} else if (line.contains(sites[8])) {
-							site = "bolsadeautomoveisrj";
-							tagTitulo = "h2.post-title";
-							tagPreco = "span.price";
-							tagAttrs = "div.dados_anuncio ul";
-							tagAttrsElemento = "li";
-							break;
-						} else if (line.contains(sites[9])) {
-							site = "estadodeminas";
-							tagTitulo = "h1.resultados-da-busca-descricao-dos-itens";
-							tagPreco = "li.item-valor";
-							tagAttrs = "ul.dados-item";
-							tagAttrsElemento = "li";
-							break;
-						}
+				// varre o html identificando de que site se trata
+				while (scanner.hasNextLine()) {
+					String line = scanner.nextLine();
+					if (line.contains(sites[0])) {
+						site = "iCarros";
+						tagTitulo = "h1.titulo-sm";
+						tagPreco = "h2.preco";
+						tagAttrs = "div.card-informacoes-basicas";
+						tagAttrsElemento = "li";
+						break;
+					} else if (line.contains(sites[1])) {
+						site = "MercadoLivre";
+						tagTitulo = "h1[itemprop='name']";
+						tagPreco = "dd.placePrice";
+						tagAttrs = "ul.technical-details";
+						tagAttrsElemento = "li";
+						break;
+					} else if (line.contains(sites[2])) {
+						site = "olx";
+						tagTitulo = "h1#ad_title";
+						tagPreco = "span.OLXad-price";
+						tagAttrs = "div.atributes";
+						tagAttrsElemento = "li";
+						break;
+					} else if (line.contains(sites[3])) {
+						site = "jbsveiculos";
+						tagTitulo = "h1.car-details__title";
+						tagPreco = "h2.car-details__price";
+						tagAttrs = "ul.car-details__features";
+						tagAttrsElemento = "li";
+						break;
+					} else if (line.contains(sites[4])) {
+						site = "diariodepernambucovrum";
+						tagTitulo = "h1.resultados-da-busca-descricao-dos-itens";
+						tagPreco = "li.item-valor";
+						tagAttrs = "ul.dados-item";
+						tagAttrsElemento = "li";
+						break;
+					} else if (line.contains(sites[5])) {
+						site = "autoline";
+						tagTitulo = "div.rotate-banner-heding";
+						tagPreco = "div#divProposta header";
+						tagAttrs = "div.car-detail ul";
+						tagAttrsElemento = "li";
+						break;
+					} else if (line.contains(sites[6])) {
+						site = "socarrao";
+						tagTitulo = "div.titulo-principal-detalhe";
+						tagPreco = "div.modal-lateral-box-preco";
+						tagAttrs = "div.aba-dados-veiculo-dados";
+						tagAttrsElemento = "li";
+						break;
+					} else if (line.contains(sites[7])) {
+						site = "sodresantoro";
+						tagTitulo = "div.online_lance-tit-esq";
+						tagPreco = "span.valor";
+						tagAttrs = "ul.divisao";
+						tagAttrsElemento = "li";
+						break;
+					} else if (line.contains(sites[8])) {
+						site = "bolsadeautomoveisrj";
+						tagTitulo = "h2.post-title";
+						tagPreco = "span.price";
+						tagAttrs = "div.dados_anuncio ul";
+						tagAttrsElemento = "li";
+						break;
+					} else if (line.contains(sites[9])) {
+						site = "estadodeminas";
+						tagTitulo = "h1.resultados-da-busca-descricao-dos-itens";
+						tagPreco = "li.item-valor";
+						tagAttrs = "ul.dados-item";
+						tagAttrsElemento = "li";
+						break;
 					}
-					scanner.close();
 				}
+				scanner.close();
+
 				// inicia o jsoup
 				Document documento = Jsoup.parse(input, "UTF-8",
 						"http://example.com/");
@@ -177,21 +179,21 @@ public class extrator {
 					break;
 				}
 			}
-			
-		// NÃO GENÉRICO
+
+			// NÃO GENÉRICO
 		} else {
 
 			// print os resultados
 			System.out.println("\n\n=== " + site);
-			
+
 			// descricao
 			try {
 				Element titulo = doc.select(tagTitulo).first();
-				System.out.println(titulo.text());				
+				System.out.println(titulo.text());
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
-						
+
 			// preco
 			try {
 				Element preco = doc.select(tagPreco).first();
@@ -203,9 +205,9 @@ public class extrator {
 			// atributos
 			try {
 				Element conteudo = doc.select(tagAttrs).first();
-				Elements attr = conteudo.getElementsByTag(tagAttrsElemento);				
+				Elements attr = conteudo.getElementsByTag(tagAttrsElemento);
 				for (Element e : attr) {
-					System.out.print(e.text()+" ");
+					System.out.print(e.text() + " ");
 				}
 			} catch (Exception e) {
 				// TODO: handle exception
