@@ -16,36 +16,27 @@ public class Extrator{
 	private boolean useGeneric;
 	private Manager manager;
 
-	String site = "";
-	String tittleTag = "";
-	String priceTag = "";
-	String attrsTag = "";
-	String attrsElementTag = "";
-
-
 	String sites[] = { "www.icarros.com.br", "www.mercadolivre.com.br",
 			"www.olx.com.br/veiculos/carros", "www.jbsveiculos.com.br",
 			"www.diariodepernambuco.vrum.com.br", "www.autoline.com.br",
 			"www.socarrao.com.br", "www.sodresantoro.com.br",
 			"bolsadeautomoveisrj.com.br", "estadodeminas.vrum.com.br" };
 
-	/*
-	public static void main(String[] args) {
-		extrator e = new extrator(false);
-		e.varreArquivos();
-	}
-	 */
 	public Extrator(boolean useGeneric, Manager manager) {
 		this.useGeneric = useGeneric; 
 		this.manager = manager;
-
-
-
+		
 	}
 
 
-	public void varreArquivos(Document document) {
+	public void processDocument(Document document) {
 
+		String site = "";
+		String tittleTag = "";
+		String priceTag = "";
+		String attrsTag = "";
+		String attrsElementTag = "";
+		
 		try {
 			// pasta dos htmls
 			File dir = new File("src/sites");
@@ -132,28 +123,24 @@ public class Extrator{
 					}
 				}
 				scanner.close();
-//
-//				// inicia o jsoup
-//				Document documento = Jsoup.parse(input, "UTF-8",
-//						"http://example.com/");
-				
-				if(useGeneric) extractFromGenericDocument(document);
-				else extractFromDocument(document);
+
+				if(useGeneric) extractFromGenericDocument(document, site);
+				else extractFromDocument(document,site, tittleTag,
+						priceTag, attrsTag, attrsElementTag);
 				
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public void extractFromGenericDocument(Document doc){
+	public void extractFromGenericDocument(Document doc, String site){
 		System.out.println("\n===== " + site);
 
 		boolean foundTittle = false;
 		Elements tittleElements = doc.body().getElementsByTag("h1");
 		for (Element e : tittleElements) {
-			if (verificaTitulo(e.text())) {
+			if (checkTittle(e.text())) {
 				System.out.println(e.text());
 				foundTittle = true;
 				break;
@@ -162,7 +149,7 @@ public class Extrator{
 		if (!foundTittle) {
 			tittleElements = doc.body().getElementsByTag("h2");
 			for (Element e : tittleElements) {
-				if (verificaTitulo(e.text())) {
+				if (checkTittle(e.text())) {
 					System.out.println(e.text());
 					break;
 				}
@@ -191,7 +178,9 @@ public class Extrator{
 		
 	}
 	
-	public void extractFromDocument(Document doc) {
+	public void extractFromDocument(Document doc, String site, String tittleTag,
+			String priceTag, String attrsTag, String attrsElementTag) {
+		
 		String title, price;
 		ArrayList<String> ar = new ArrayList<String>();
 		
@@ -220,7 +209,7 @@ public class Extrator{
 
 	}
 
-	private boolean verificaTitulo(String tit) {
+	private boolean checkTittle(String tit) {
 		String marcasCarro[] = { "Fiat", "Jeep", "Suzuki", "Volkswagen",
 				"Nissan", "Ford", "Citroën", "Honda", "Bmw", "Audi", "Citroen",
 				"Chevrolet", "Hyundai", "Peugeot", "Renault", "Kia", "Jac" };
