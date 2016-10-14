@@ -13,8 +13,12 @@ import manager.Manager;
 
 public class HeuristicCrawler extends Crawler{
 
-	private ArrayList<String> bestLinks;
-	private ArrayList<String> otherLinks;
+	private ArrayList<String> baseLinks;	
+	private ArrayList<ArrayList<String>> bestLinks;
+	
+	
+	private ArrayList<ArrayList<String>> otherLinks;
+	
 	
 	private Random rand;
 	
@@ -26,21 +30,38 @@ public class HeuristicCrawler extends Crawler{
 		
 		rand = new Random();
 		
-		bestLinks = new ArrayList<String>();
-		otherLinks = new ArrayList<String>();
-		words = new HashSet<String>();
+		bestLinks = new ArrayList<ArrayList<String>>();
+		otherLinks = new ArrayList<ArrayList<String>>();
 		
+		for(int x=0;x<urls.size();x++){
+			bestLinks.add(new ArrayList<String>());
+			otherLinks.add(new ArrayList<String>());
+		}
+		
+		/*
+		 * heuristic_word and heuristic_base_links must have the same number of line, they also need to have an "one to one relation"
+		 */
+		
+		words = new HashSet<String>();
 		File file = new File("heuristic_words");
 		Scanner in = new Scanner(file);
-		
 		while(in.hasNextLine()){
 			words.add(in.nextLine());
 		}
+		
+		baseLinks = new ArrayList<String>();
+		file = new File("heuristic_base_links");
+		in = new Scanner(file);
+		while(in.hasNextLine()){
+			baseLinks.add(in.nextLine());
+		}
+		
 		
 		for(String url : urls){
 			addLink(url);
 			usedLinks.add(url);
 		}
+		
 		
 		
 	}
@@ -59,9 +80,17 @@ public class HeuristicCrawler extends Crawler{
 		}
 		
 		if(ok){
-			bestLinks.add(link);
+			for(int x=0;x < bestLinks.size();x++){
+				if(link.contains(baseLinks.get(x))){
+					bestLinks.get(x).add(link);
+				}
+			}
 		}else{
-			otherLinks.add(link);
+			for(int x=0;x < otherLinks.size();x++){
+				if(link.contains(baseLinks.get(x))){
+					otherLinks.get(x).add(link);
+				}
+			}
 		}
 		
 	}
@@ -71,21 +100,38 @@ public class HeuristicCrawler extends Crawler{
 		return bestLinks.size() + otherLinks.size(); 
 	}
 
+	
 	@Override
 	public String removeNextLink() {
-		int randNumber = rand.nextInt(100);
+		ArrayList<Integer> options = new ArrayList<Integer>();
 		
-		if(bestLinks.size() > 0 && otherLinks.size() > 0){
-			if(randNumber <= 80){
-				return bestLinks.remove(0);
-			}else{
-				return otherLinks.remove(0);
-			}
-		}else if(bestLinks.size() > 0){
-			return bestLinks.remove(0);
-		}else{
-			return otherLinks.remove(0);
+		for(int x=0;x<baseLinks.size();x++){
+			if(bestLinks.get(x).size() + otherLinks.get(x).size() > 0) options.add(x);
 		}
+		
+		if(options.size() != 0){
+			int op = rand.nextInt(options.size()); 
+			
+			return removeNextLink(bestLinks.get(options.get(op)), otherLinks.get(options.get(op)));
+		}else{
+			return "";
+		}
+
 	}
 
+	public String removeNextLink(ArrayList<String> best, ArrayList<String> others){
+		
+		if(best.size() > 0 && others.size() > 0){
+			if(rand.nextInt(100) <= 80){
+				return best.remove(0);
+			}else{
+				return others.remove(0);
+			}
+		}else if(best.size() > 0){
+			return best.remove(0);
+		}else{
+			return others.remove(0);
+		}
+	}
+	
 }
