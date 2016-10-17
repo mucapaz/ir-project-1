@@ -4,59 +4,62 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.compress.utils.IOUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import crawlercommons.robots.BaseRobotRules;
+import crawlercommons.robots.SimpleRobotRulesParser;
+
 public class Robot {
 
-	private Set<String> disallowSet;
-
-	public Robot(ArrayList<String> urls, ArrayList<String> robotUrls) {
-		disallowSet = new HashSet<String>();
-
-		String url;
-		int index = 0;
-		for(String robotUrl : robotUrls){
-			url = urls.get(index++);
-			if(!robotUrl.equals("NULL")){
-				try {
-					InputStreamReader sr = new InputStreamReader(new URL(robotUrl).openStream());
-					BufferedReader bf = new BufferedReader(sr);
-
-					String line;
-					String[] split;
-					while((line = bf.readLine()) != null){
-						split = line.split(" ");
-						if(split != null && split.length>=2){
-							if(split[0].equals("Disallow:")){
-								disallowSet.add(url + split[1].substring(1));
-								//System.out.println(url + split[1].substring(1));
-							}
-						}
-
-						line = null;
-						split = null;
-					}
-
-				} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}	
-			}
-		}
-
-	}
-
-	public boolean disallow(String url){
-		return disallowSet.contains(url);
-	}
+	private static HashMap<String, BaseRobotRules> urlRobotMap = new HashMap<String, BaseRobotRules>();
+	
+	private static int robotNameAux = 0;
+	
+	public static BaseRobotRules parseRobots(String host){
+        try{
+            while(host.endsWith("/")) host = host.substring(0, host.length() - 1);
+ 
+            URI uri = new URI(host + "/robots.txt");
+            
+            String content = uri.toURL().toString();
+           
+            SimpleRobotRulesParser robotParser = new SimpleRobotRulesParser();
+           
+            return robotParser.parseContent(uri.toString(), content.getBytes(), "text/plain", "robot" + (robotNameAux++));
+        }catch(Exception e){
+            return null; 
+        }
+       
+    }
+   
+    public static boolean isAllowed(String url){
+        try {
+            URL uri = new URL(url);
+           
+            BaseRobotRules rules = null;
+            if(urlRobotMap.containsKey(uri.getHost())){
+                rules = urlRobotMap.get(uri.getHost());
+            }else{
+                rules = Robot.parseRobots(uri.getProtocol() + "://" + uri.getHost());
+                urlRobotMap.put(uri.getHost(), rules);
+            }
+           
+            if(rules == null) return true;
+            return rules.isAllowed(url);
+           
+        } catch (Exception e) {
+            e.printStackTrace();
+            return true; 
+        }
+    }
 
 }
