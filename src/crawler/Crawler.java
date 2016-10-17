@@ -13,6 +13,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.text.html.HTML;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -25,7 +27,7 @@ public abstract class Crawler implements Runnable{
 
 	private String savePageTo = "crawler_saved_pages";
 	
-	protected static final int CRAW_LIMIT = 10000;
+	protected static final int CRAW_LIMIT = 1000;
 
 	protected String base;
 
@@ -75,6 +77,7 @@ public abstract class Crawler implements Runnable{
 						}
 					}					
 				}
+				Thread.sleep(500);
 				it++;
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -91,6 +94,8 @@ public abstract class Crawler implements Runnable{
 		try {
 			htmlWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(pageName), "UTF-8"));
 			htmlWriter.write(page);
+			htmlWriter.flush();
+			htmlWriter.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
