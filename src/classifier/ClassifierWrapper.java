@@ -180,7 +180,7 @@ public class ClassifierWrapper implements Runnable{
 
 	@Override
 	public void run() {
-
+		int documents = 0, relevants = 0;
 		while(true){
 
 			Document document = manager.removeClassifierDocument();
@@ -189,10 +189,12 @@ public class ClassifierWrapper implements Runnable{
 			try {
 				boolean include = classify(page);
 				if(include){
+					relevants++;
 					manager.addExtractorDocument(document);
 				}
-
+				documents++;
 				
+				System.out.println("Relevants: " + relevants + ", documents:" + documents );
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
