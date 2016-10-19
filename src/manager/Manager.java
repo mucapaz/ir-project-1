@@ -15,7 +15,7 @@ import org.jsoup.nodes.Element;
 import classifier.ClassifierWrapper;
 import crawler.HeuristicCrawler;
 import crawler.SimpleCrawler;
-import extractor.Extractor;
+import wrapper.Wrapper;
 
 public class Manager {
 	
@@ -44,7 +44,7 @@ public class Manager {
 		
 		
 		try {
-			Thread crawlerThread = new Thread(new HeuristicCrawler(url, 
+			Thread crawlerThread = new Thread(new SimpleCrawler(url, 
 					robot, this));
 			crawlerThread.start();
 			
@@ -53,7 +53,7 @@ public class Manager {
 			classifierThread.start();
 		
 			
-			Thread extractorThread = new Thread( new Extractor(true, this));
+			Thread extractorThread = new Thread( new Wrapper(true, this));
 			extractorThread.start();
 			
 			

@@ -1,4 +1,4 @@
-package extractor;
+package wrapper;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import org.jsoup.select.Elements;
 
 import manager.Manager;
 
-public class Extractor implements Runnable{
+public class Wrapper implements Runnable{
 
 	private boolean useGeneric;
 	private Manager manager;
@@ -22,7 +22,7 @@ public class Extractor implements Runnable{
 			"www.socarrao.com.br", "www.sodresantoro.com.br",
 			"bolsadeautomoveisrj.com.br", "estadodeminas.vrum.com.br" };
 
-	public Extractor(boolean useGeneric, Manager manager) {
+	public Wrapper(boolean useGeneric, Manager manager) {
 		this.useGeneric = useGeneric; 
 		this.manager = manager;
 
